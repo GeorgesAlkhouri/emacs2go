@@ -1,7 +1,7 @@
-
+version: "3.8"
 services:
-  emacs2go:
-    image: emacs2go
+  emacs:
+    image: spacemacs2go
     ports:
       - "2222:22"
     environment:
@@ -14,7 +14,7 @@ services:
     volumes:
       - type: volume
         source: ...
-        target: ~/shared
+        target: /root/shared
       - type: bind
         source: ...
-        target: ~/.spacemacs
+        target: /root/.spacemacs
