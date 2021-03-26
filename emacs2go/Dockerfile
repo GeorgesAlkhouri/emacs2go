@@ -3,7 +3,7 @@
 
 FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND noninteractive
-ENV JOBS=2
+ENV INSTALL_SPACEMACS 1
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -41,13 +41,10 @@ WORKDIR /emacs-27.1
 
 RUN ./autogen.sh && ./configure --with-x-toolkit=lucid --with-cairo --with-mailutils
 
+ARG JOBS=2
 RUN make -j ${JOBS} && make install
 
 WORKDIR /
-
-# Install Spacemacs
-#RUN git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-
 
 # SSH runtime
 RUN mkdir /var/run/sshd
