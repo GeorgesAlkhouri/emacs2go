@@ -1,50 +1,23 @@
 # Inspired by
 # https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation
 
-FROM ubuntu:20.04
+FROM silex/emacs:master
 ENV DEBIAN_FRONTEND noninteractive
-ENV INSTALL_SPACEMACS 1
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update -y
 
 # Install requirements
-# Do not use pkg-config
-# libjansson4 for fast JSON
 RUN apt-get install -y \
-        apt-transport-https \
-        ca-certificates \
-        gnupg-agent \
         software-properties-common \
         openssh-server \
-        libjansson4 libjansson-dev \
         vim git
 
 # Install X2Go server
 RUN add-apt-repository ppa:x2go/stable
 RUN apt-get update -y
 RUN apt-get install -y x2goserver x2goserver-xsession
-
-
-
-# Get deps for Emacs
-RUN sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list \
-    && apt-get update \
-    && apt-get build-dep -y emacs
-
-# Build and install Emacs
-RUN wget https://ftp.gnu.org/gnu/emacs/emacs-27.1.tar.xz
-RUN tar -xf emacs-27.1.tar.xz
-
-WORKDIR /emacs-27.1
-
-RUN ./autogen.sh && ./configure --with-x-toolkit=lucid --with-cairo --with-mailutils
-
-ARG JOBS=2
-RUN make -j ${JOBS} && make install
-
-WORKDIR /
 
 # SSH runtime
 RUN mkdir /var/run/sshd
